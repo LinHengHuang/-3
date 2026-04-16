@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gomoku UI</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="app">
+    <section class="panel">
+      <p class="eyebrow">Desktop Demo</p>
+      <h1>Gomoku</h1>
+      <p class="subtitle">A simple local two-player five-in-a-row board.</p>
+
+      <div class="status-card">
+        <p class="label">Current Status</p>
+        <p id="status" class="status">Black to move</p>
+      </div>
+
+      <div class="controls">
+        <button id="restartButton" type="button">Restart Game</button>
+      </div>
+
+      <div class="legend">
+        <div class="legend-item">
+          <span class="stone stone-black"></span>
+          <span>Black</span>
+        </div>
+        <div class="legend-item">
+          <span class="stone stone-white"></span>
+          <span>White</span>
+        </div>
+      </div>
+
+      <p class="hint">Open <code>index.html</code> directly in a browser to play.</p>
+    </section>
+
+    <section class="board-shell">
+      <div id="board" class="board" aria-label="Gomoku board"></div>
+    </section>
+  </main>
+
+  <script src="./script.js"></script>
+</body>
+</html>
