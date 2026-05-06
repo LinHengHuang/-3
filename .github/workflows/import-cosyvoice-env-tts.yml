@@ -29,11 +29,15 @@ jobs:
 
           workdir="$PWD"
           src="$(mktemp -d)"
+          keep="$src/import-cosyvoice-env-tts.yml"
           git clone --depth 1 https://github.com/KillerQueen-Z/CosyVoice-env-tts.git "$src/source"
-          rm -rf "$src/source/.git"
+          rm -rf "$src/source/.git" "$src/source/.github/workflows"
 
+          cp "$workdir/.github/workflows/import-cosyvoice-env-tts.yml" "$keep"
           find "$workdir" -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
           cp -a "$src/source/." "$workdir/"
+          mkdir -p "$workdir/.github/workflows"
+          cp "$keep" "$workdir/.github/workflows/import-cosyvoice-env-tts.yml"
 
           git add -A
           git commit -m "Import CosyVoice env TTS project"
