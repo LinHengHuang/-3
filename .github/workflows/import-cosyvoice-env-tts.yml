@@ -1,0 +1,40 @@
+name: Import CosyVoice env TTS
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/import-cosyvoice-env-tts.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout target repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Replace repository contents
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          workdir="$PWD"
+          src="$(mktemp -d)"
+          git clone --depth 1 https://github.com/KillerQueen-Z/CosyVoice-env-tts.git "$src/source"
+
+          find "$workdir" -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -a "$src/source/." "$workdir/"
+          rm -rf "$workdir/.git"
+
+          git add -A
+          git commit -m "Import CosyVoice env TTS project"
+          git push origin HEAD:main
