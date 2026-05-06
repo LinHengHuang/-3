@@ -1,0 +1,49 @@
+name: Import CosyVoice env TTS
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/import-cosyvoice-env-tts.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout target repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Replace repository contents
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          workdir="$PWD"
+          src="$(mktemp -d)"
+          keep_workflows="$src/workflows"
+          cp -a "$workdir/.github/workflows" "$keep_workflows"
+
+          git clone --depth 1 https://github.com/KillerQueen-Z/CosyVoice-env-tts.git "$src/source"
+          submodule_sha="$(git -C "$src/source" ls-tree HEAD third_party/Matcha-TTS | awk '{print $3}')"
+          rm -rf "$src/source/.git" "$src/source/.github/workflows"
+
+          find "$workdir" -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
+          cp -a "$src/source/." "$workdir/"
+          mkdir -p "$workdir/.github"
+          rm -rf "$workdir/.github/workflows"
+          cp -a "$keep_workflows" "$workdir/.github/workflows"
+
+          git add -A
+          git add -f asset/cross_lingual_prompt.wav asset/zero_shot_prompt.wav
+          git update-index --add --cacheinfo 160000 "$submodule_sha" third_party/Matcha-TTS
+          git commit -m "Import CosyVoice env TTS project"
+          git push origin HEAD:main
